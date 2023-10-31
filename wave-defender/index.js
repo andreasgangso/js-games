@@ -2,8 +2,6 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-const speed = 1;
-
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -15,11 +13,9 @@ const direction = {
     right: 4,
 }
 
-let keys = {
-    w: false,
-    a: false,
-    s: false,
-    d: false
+let input = {
+    left: false,
+    right: false,
 };
 
 let player = {
@@ -28,43 +24,88 @@ let player = {
     direction: direction.none,
 }
 
+// BULLETS
 let bullets = []
+let lastBulletShotTime = 0;
 
+// ENEMIES
+let enemies = []
+let lastEnemySpawnTime = 0;
+
+// GAME LOOP
 let lastTime = 0;
+window.requestAnimationFrame(gameLoop);
 function gameLoop(time) {
-    let delta = time - lastTime;
+    let delta = time - lastTime; // Time since last frame
     lastTime = time;
-    console.log(delta)
-    if (keys.w && player.direction != direction.up) {
-        player.direction = direction.up;
-    } else if (keys.a && player.direction != direction.left) {
+
+    // INPUT LOGIC
+    if (input.left && player.direction != direction.left) {
         player.direction = direction.left;
-    } else if (keys.s && player.direction != direction.down) {
-        player.direction = direction.down;
-    } else if (keys.d && player.direction != direction.right) {
+    } else if (input.right && player.direction != direction.right) {
         player.direction = direction.right;
-    } else {
+    } else if (!input.left && !input.right) {
         player.direction = direction.none;
     }
 
-
-
+    // PLAYER LOGIC
     if (player.direction === direction.up) {
-        player.y -= speed * delta;
+        player.y -= 1 * delta;
     } else if (player.direction === direction.down) {
-        player.y += speed * delta;
+        player.y += 1 * delta;
     }
     if (player.direction === direction.left) {
-        player.x -= speed * delta;
+        player.x -= 0.5 * delta;
     } else if (player.direction === direction.right) {
-        player.x += speed * delta;
+        player.x += 0.5 * delta;
     }
 
-    for (let i = 0; i < bullets.length; i++) {
-        bullets[i].y -= 5;
+    // BULLET LOGIC
+    lastBulletShotTime = lastBulletShotTime + delta;
+    if (input.left || input.right) {
+        if (lastBulletShotTime > 100) {
+            bullets.push({
+                x: player.x + 5,
+                y: player.y,
+            });
+            lastBulletShotTime = 0;
+        }
     }
 
+    for (let bullet of bullets) {
+        bullet.y -= 5;
+        for (let enemy of enemies) {
+            if (colliding(bullet, enemy)) {
+                // Remove bullet from list
+                bullets.splice(bullets.indexOf(bullet), 1);
+                // Remove enemy from list
+                enemies.splice(enemies.indexOf(enemy), 1);
+            }
+        }
+    }
 
+    // ENEMY LOGIC
+    lastEnemySpawnTime = lastEnemySpawnTime + delta;
+    if (lastEnemySpawnTime > 200) {
+        enemies.push({
+            x: Math.random() * canvas.width,
+            y: -20,
+        });
+        lastEnemySpawnTime = 0;
+    }
+    for (let enemy of enemies) {
+        enemy.y += 1.5;
+        if (enemy.y > canvas.height) {
+            // Game over
+            ctx.fillStyle = 'white';
+            ctx.font = '48px sans-serif';
+            ctx.fillText('Game Over', canvas.width / 2 - 120, canvas.height / 2);
+
+            return; // Stops the game loop
+        }
+    }
+
+    // DRAWING
     draw();
     window.requestAnimationFrame(gameLoop);
 }
@@ -77,33 +118,39 @@ function draw() {
     ctx.fillRect(player.x, player.y, 20, 20);
 
     ctx.fillStyle = 'white';
-    for (let i = 0; i < bullets.length; i++) {
-        ctx.fillRect(bullets[i].x, bullets[i].y, 5, 10);
+    for (let bullet of bullets) {
+        ctx.fillRect(bullet.x, bullet.y, 5, 10);
+    }
+
+    ctx.fillStyle = 'red';
+    for (let enemy of enemies) {
+        ctx.fillRect(enemy.x, enemy.y, 20, 20);
     }
 }
 
-function shootBullet() {
-    bullets.push({
-        x: player.x + 5,
-        y: player.y,
-    });
+function colliding(a, b) {
+    return a.x < b.x + 20 &&
+        a.x + 20 > b.x &&
+        a.y < b.y + 20 &&
+        a.y + 20 > b.y;
 }
 
-function handleKeyDown(event) {
-    if (event.key === ' ') {
-        shootBullet();
+// TAP CONTROLS
+document.addEventListener('touchstart', (event) => {
+    if (event.changedTouches[0].clientX < canvas.width / 2) {
+        input.left = true;
+    } else {
+        input.right = true;
     }
-    if (['w', 'a', 's', 'd'].includes(event.key)) {
-        keys[event.key] = true;
-    }
-}
+    // Prevent default behavior, like scrolling, zooming and long-press menus.
+    event.preventDefault();
+    event.stopPropagation();
+}, { passive: false });
 
-function handleKeyUp(event) {
-    if (['w', 'a', 's', 'd'].includes(event.key)) {
-        keys[event.key] = false;
+document.addEventListener('touchend', (event) => {
+    if (event.changedTouches[0].clientX < canvas.width / 2) {
+        input.left = false;
+    } else {
+        input.right = false;
     }
-}
-
-document.addEventListener("keydown", handleKeyDown);
-document.addEventListener("keyup", handleKeyUp);
-window.requestAnimationFrame(gameLoop);
+});

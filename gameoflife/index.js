@@ -17,11 +17,11 @@ function setup() {
     const rows = Math.floor(canvas.width / 10);
     const columns = Math.floor(canvas.height / 10);
 
-    for (let i = 0; i < rows; i++) {
-        grid[i] = [];
+    for (let row = 0; row < rows; row++) {
+        grid[row] = [];
 
-        for (let j = 0; j < columns; j++) {
-            grid[i][j] = dead;
+        for (let column = 0; column < columns; column++) {
+            grid[row][column] = dead;
         }
     }
 
@@ -38,28 +38,28 @@ function nextCycle() {
     }
 }
 
-function countNeighbours(x, y) {
+function countNeighbours(row, column) {
     let neighbours = 0;
 
     // left neighbours
-    if (x - 1 >= 0) {
-        if (grid[x - 1][y - 1] === alive) neighbours += 1;
-        if (grid[x - 1][y] === alive) neighbours += 1;
-        if (grid[x - 1][y + 1] === alive) neighbours += 1;
+    if (row - 1 >= 0) {
+        if (grid[row - 1][column - 1] === alive) neighbours += 1;
+        if (grid[row - 1][column] === alive) neighbours += 1;
+        if (grid[row - 1][column + 1] === alive) neighbours += 1;
     }
 
     // top/bottom neighbours
-    if (x - 1 >= 0) {
-        if (grid[x][y - 1] === alive) neighbours += 1;
+    if (row - 1 >= 0) {
+        if (grid[row][column - 1] === alive) neighbours += 1;
         // Don't count itself as neighbour
-        if (grid[x][y + 1] === alive) neighbours += 1;
+        if (grid[row][column + 1] === alive) neighbours += 1;
     }
 
     // right neighbours
-    if (x + 1 < grid.length) {
-        if (grid[x + 1][y - 1] === alive) neighbours += 1;
-        if (grid[x + 1][y] === alive) neighbours += 1;
-        if (grid[x + 1][y + 1] === alive) neighbours += 1;
+    if (row + 1 < grid.length) {
+        if (grid[row + 1][column - 1] === alive) neighbours += 1;
+        if (grid[row + 1][column] === alive) neighbours += 1;
+        if (grid[row + 1][column + 1] === alive) neighbours += 1;
     }
 
     return neighbours;
@@ -70,21 +70,21 @@ function applyRules() {
     // not have an effect on cells we check later.
     const newGrid = [];
 
-    for (let i = 0; i < grid.length; i++) {
-        newGrid[i] = [];
+    for (let row = 0; row < grid.length; row++) {
+        newGrid[row] = [];
 
-        for (let j = 0; j < grid[i].length; j++) {
-            const neighbours = countNeighbours(i, j);
+        for (let column = 0; column < grid[row].length; column++) {
+            const neighbours = countNeighbours(row, column);
 
-            if (grid[i][j] === alive && (neighbours === 2 || neighbours === 3)) {
+            if (grid[row][column] === alive && (neighbours === 2 || neighbours === 3)) {
                 // Any live cell with two or three live neighbours survives.
-                newGrid[i][j] = alive;
-            } else if (grid[i][j] === dead && neighbours === 3) {
+                newGrid[row][column] = alive;
+            } else if (grid[row][column] === dead && neighbours === 3) {
                 // Any dead cell with three live neighbours becomes a live cell.
-                newGrid[i][j] = alive;
+                newGrid[row][column] = alive;
             } else {
                 // All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-                newGrid[i][j] = dead;
+                newGrid[row][column] = dead;
             }
         }
     }
@@ -98,15 +98,15 @@ function draw() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw all cells
-    for (let i = 0; i < grid.length; i++) {
-        for (let j = 0; j < grid[i].length; j++) {
-            const x = i * 10;
-            const y = j * 10;
+    for (let row = 0; row < grid.length; row++) {
+        for (let column = 0; column < grid[row].length; column++) {
+            const x = row * 10;
+            const y = column * 10;
 
             ctx.fillStyle = 'gray';
             ctx.fillRect(x, y, 10, 10);
 
-            if (grid[i][j] === dead) {
+            if (grid[row][column] === dead) {
                 ctx.fillStyle = 'white';
                 ctx.fillRect(x, y, 9, 9);
             } else {
@@ -120,14 +120,14 @@ function draw() {
 canvas.addEventListener('click', function (e) {
     // Get indexes of the element of the grid the user clicked on
     const rect = canvas.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / 10);
-    const y = Math.floor((e.clientY - rect.top) / 10);
+    const row = Math.floor((e.clientX - rect.left) / 10);
+    const column = Math.floor((e.clientY - rect.top) / 10);
 
-    if (grid.length >= x && grid[x].length >= y) {
-        if (grid[x][y] === dead) {
-            grid[x][y] = alive;
+    if (grid.length >= row && grid[row].length >= column) {
+        if (grid[row][column] === dead) {
+            grid[row][column] = alive;
         } else {
-            grid[x][y] = dead;
+            grid[row][column] = dead;
         }
     }
 

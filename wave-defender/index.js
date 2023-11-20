@@ -154,3 +154,19 @@ document.addEventListener('touchend', (event) => {
         input.right = false;
     }
 });
+
+// Keyboard controls
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+        input.left = true;
+    } else if (event.key === 'ArrowRight') {
+        input.right = true;
+    }
+});
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'ArrowLeft') {
+        input.left = false;
+    } else if (event.key === 'ArrowRight') {
+        input.right = false;
+    }
+});

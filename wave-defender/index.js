@@ -5,14 +5,6 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const direction = {
-    none: 0,
-    up: 1,
-    down: 2,
-    left: 3,
-    right: 4,
-}
-
 let input = {
     left: false,
     right: false,
@@ -21,7 +13,7 @@ let input = {
 let player = {
     x: canvas.width / 2,
     y: canvas.height - 100,
-    direction: direction.none,
+    direction: 'none',
 }
 
 // BULLETS
@@ -40,23 +32,23 @@ function gameLoop(time) {
     lastTime = time;
 
     // INPUT LOGIC
-    if (input.left && player.direction != direction.left) {
-        player.direction = direction.left;
-    } else if (input.right && player.direction != direction.right) {
-        player.direction = direction.right;
+    if (input.left && player.direction != 'left') {
+        player.direction = 'left';
+    } else if (input.right && player.direction != 'right') {
+        player.direction = 'right';
     } else if (!input.left && !input.right) {
-        player.direction = direction.none;
+        player.direction = 'none';
     }
 
     // PLAYER LOGIC
-    if (player.direction === direction.up) {
+    if (player.direction === 'up') {
         player.y -= 1 * delta;
-    } else if (player.direction === direction.down) {
+    } else if (player.direction === 'down') {
         player.y += 1 * delta;
     }
-    if (player.direction === direction.left) {
+    if (player.direction === 'left') {
         player.x -= 0.5 * delta;
-    } else if (player.direction === direction.right) {
+    } else if (player.direction === 'right') {
         player.x += 0.5 * delta;
     }
 

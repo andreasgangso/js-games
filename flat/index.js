@@ -1,4 +1,3 @@
-
 /** @type {HTMLCanvasElement} */
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -48,7 +47,6 @@ function setup() {
 setup();
 
 function gameLoop() {
-
     // Setup movement
 
     if (key_w) {
@@ -100,13 +98,17 @@ function gameLoop() {
         ball_speed = default_ball_speed;
         player_speed = default_player_speed;
     }
-    
+
     if (ball_x < 20 && ball_y > p1_currentY && ball_y < p1_currentY + 100) {
         ball_direction_x = 1;
         ball_speed += 0.5;
         player_speed += 0.5;
     }
-    if (ball_x > canvas.width - 30 && ball_y > p2_currentY && ball_y < p2_currentY + 100) {
+    if (
+        ball_x > canvas.width - 30 &&
+        ball_y > p2_currentY &&
+        ball_y < p2_currentY + 100
+    ) {
         ball_direction_x = -1;
         ball_speed += 0.5;
         player_speed += 0.5;
@@ -133,9 +135,7 @@ function draw() {
     ctx.font = '30px Arial';
     ctx.fillText(p1_score, 100, 100);
     ctx.fillText(p2_score, canvas.width - 100, 100);
-    
 }
-
 
 window.addEventListener('keydown', onKeyDown);
 function onKeyDown(event) {

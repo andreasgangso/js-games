@@ -2,12 +2,11 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const playerDefaultSpeed = 2;
-const ballDefaultSpeed = canvas.width > 1000 ? 3 : 2
+const ballDefaultSpeed = canvas.width > 1000 ? 3 : 2;
 
 let paused = false;
 
@@ -16,7 +15,7 @@ const playerBlue = {
     y: canvas.height / 2,
     direction: 0,
     speed: playerDefaultSpeed,
-    score: 0
+    score: 0,
 };
 
 const playerGreen = {
@@ -24,7 +23,7 @@ const playerGreen = {
     y: canvas.height / 2,
     direction: 0,
     speed: playerDefaultSpeed,
-    score: 0
+    score: 0,
 };
 
 const ball = {
@@ -32,14 +31,14 @@ const ball = {
     y: canvas.height / 2,
     speed: ballDefaultSpeed,
     directionX: Math.random() > 0.5 ? 1 : -1,
-    directionY: Math.random() > 0.5 ? 1 : -1
+    directionY: Math.random() > 0.5 ? 1 : -1,
 };
 
 const keys = {
     w: false,
     s: false,
     ArrowUp: false,
-    ArrowDown: false
+    ArrowDown: false,
 };
 
 function newRound() {
@@ -69,13 +68,17 @@ function gameOver() {
         ctx.fillStyle = 'white';
         ctx.fillText('Tie!', canvas.width / 2 - 50, canvas.height / 2);
     }
-    ctx.fillText('Press space to play again', canvas.width / 2 - 200, canvas.height / 2 + 50);
+    ctx.fillText(
+        'Press space to play again',
+        canvas.width / 2 - 200,
+        canvas.height / 2 + 50
+    );
 }
 
 function gameLoop() {
     // Handle player movement
-    playerBlue.direction = keys.w ? -1 : (keys.s ? 1 : 0);
-    playerGreen.direction = keys.ArrowUp ? -1 : (keys.ArrowDown ? 1 : 0);
+    playerBlue.direction = keys.w ? -1 : keys.s ? 1 : 0;
+    playerGreen.direction = keys.ArrowUp ? -1 : keys.ArrowDown ? 1 : 0;
 
     // Move players and ball
     playerBlue.y += playerBlue.direction * playerBlue.speed;
@@ -94,15 +97,21 @@ function gameLoop() {
         playerBlue.score++;
         if (playerBlue.score === 5) {
             gameOver();
-            return
+            return;
         }
         ball.directionX = -1;
         newRound();
     }
 
     // Check if the ball is colliding with either player1 OR player2
-    if (ball.x < playerBlue.x && ball.y > playerBlue.y && ball.y < playerBlue.y + 100 ||
-        ball.x > playerGreen.x && ball.y > playerGreen.y && ball.y < playerGreen.y + 100) {
+    if (
+        (ball.x < playerBlue.x &&
+            ball.y > playerBlue.y &&
+            ball.y < playerBlue.y + 100) ||
+        (ball.x > playerGreen.x &&
+            ball.y > playerGreen.y &&
+            ball.y < playerGreen.y + 100)
+    ) {
         ball.directionX *= -1;
         ball.speed += 0.5;
         playerBlue.speed += 0.5;

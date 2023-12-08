@@ -14,14 +14,14 @@ let player = {
     x: canvas.width / 2,
     y: canvas.height - 100,
     direction: 'none',
-}
+};
 
 // BULLETS
-let bullets = []
+let bullets = [];
 let lastBulletShotTime = 0;
 
 // ENEMIES
-let enemies = []
+let enemies = [];
 let lastEnemySpawnTime = 0;
 
 // GAME LOOP
@@ -91,7 +91,11 @@ function gameLoop(time) {
             // Game over
             ctx.fillStyle = 'white';
             ctx.font = '48px sans-serif';
-            ctx.fillText('Game Over', canvas.width / 2 - 120, canvas.height / 2);
+            ctx.fillText(
+                'Game Over',
+                canvas.width / 2 - 120,
+                canvas.height / 2
+            );
 
             return; // Stops the game loop
         }
@@ -121,23 +125,24 @@ function draw() {
 }
 
 function colliding(a, b) {
-    return a.x < b.x + 20 &&
-        a.x + 20 > b.x &&
-        a.y < b.y + 20 &&
-        a.y + 20 > b.y;
+    return a.x < b.x + 20 && a.x + 20 > b.x && a.y < b.y + 20 && a.y + 20 > b.y;
 }
 
 // TAP CONTROLS
-document.addEventListener('touchstart', (event) => {
-    if (event.changedTouches[0].clientX < canvas.width / 2) {
-        input.left = true;
-    } else {
-        input.right = true;
-    }
-    // Prevent default behavior, like scrolling, zooming and long-press menus.
-    event.preventDefault();
-    event.stopPropagation();
-}, { passive: false });
+document.addEventListener(
+    'touchstart',
+    (event) => {
+        if (event.changedTouches[0].clientX < canvas.width / 2) {
+            input.left = true;
+        } else {
+            input.right = true;
+        }
+        // Prevent default behavior, like scrolling, zooming and long-press menus.
+        event.preventDefault();
+        event.stopPropagation();
+    },
+    { passive: false }
+);
 
 document.addEventListener('touchend', (event) => {
     if (event.changedTouches[0].clientX < canvas.width / 2) {

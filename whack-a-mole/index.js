@@ -7,6 +7,8 @@ canvas.height = window.innerHeight;
 
 const defaultFillColour = '#5DA1B3';
 const randoFillColour = '#FFF581';
+const gameSpeed = 1000;
+const pointsPerHit = 15;
 
 let score = 1;
 const rows = 4;
@@ -24,6 +26,13 @@ const cellHeight = heightOfRow - rowPadding * 2;
 function nextRound() {
     mole.row = Math.floor(Math.random() * rows);
     mole.column = Math.floor(Math.random() * columns);
+}
+
+function startTimer() {
+    score -= 1;
+
+    window.setTimeout(startTimer, gameSpeed);
+}
 
 function draw() {
     ctx.fillStyle = 'white';
@@ -58,6 +67,7 @@ function nextFrame() {
 }
 nextFrame();
 nextRound();
+startTimer();
 
 document.addEventListener('click', (event) => {
     const rect = canvas.getBoundingClientRect();
@@ -73,7 +83,7 @@ document.addEventListener('click', (event) => {
         moleY < mouseY &&
         moleY + cellHeight > mouseY
     ) {
-        score += 1;
+        score += pointsPerHit;
         nextRound();
     }
 });

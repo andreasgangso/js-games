@@ -5,6 +5,9 @@ const ctx = canvas.getContext('2d');
 const dead = false;
 const alive = true;
 
+const gameSpeed = 250;
+const gridSize = 10;
+
 let playing = false;
 
 let grid = [];
@@ -13,9 +16,10 @@ function setup() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const rows = Math.floor(canvas.width / 10);
-    const columns = Math.floor(canvas.height / 10);
+    const rows = Math.floor(canvas.width / gridSize);
+    const columns = Math.floor(canvas.height / gridSize);
 
+    // Init the grid. Initially all cells are dead.
     for (let row = 0; row < rows; row++) {
         grid[row] = [];
 
@@ -33,7 +37,7 @@ function nextCycle() {
     draw();
 
     if (playing) {
-        window.setTimeout(nextCycle, 250);
+        window.setTimeout(nextGameCycle, gameSpeed);
     }
 }
 
@@ -75,7 +79,10 @@ function applyRules() {
         for (let column = 0; column < grid[row].length; column++) {
             const neighbours = countNeighbours(row, column);
 
-            if (grid[row][column] === alive && (neighbours === 2 || neighbours === 3)) {
+            if (
+                grid[row][column] === alive &&
+                (neighbours === 2 || neighbours === 3)
+            ) {
                 // Any live cell with two or three live neighbours survives.
                 newGrid[row][column] = alive;
             } else if (grid[row][column] === dead && neighbours === 3) {
@@ -119,9 +126,10 @@ function draw() {
 canvas.addEventListener('click', function (e) {
     // Get indexes of the element of the grid the user clicked on
     const rect = canvas.getBoundingClientRect();
-    const row = Math.floor((e.clientX - rect.left) / 10);
-    const column = Math.floor((e.clientY - rect.top) / 10);
+    const row = Math.floor((e.clientX - rect.left) / gridSize);
+    const column = Math.floor((e.clientY - rect.top) / gridSize);
 
+    // Set new status of the field
     if (grid.length >= row && grid[row].length >= column) {
         if (grid[row][column] === dead) {
             grid[row][column] = alive;

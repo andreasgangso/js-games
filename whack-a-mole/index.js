@@ -25,6 +25,7 @@ function nextRound() {
     mole.row = Math.floor(Math.random() * rows);
     mole.column = Math.floor(Math.random() * columns);
 
+function draw() {
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -49,6 +50,13 @@ function nextRound() {
     ctx.fillStyle = 'black';
     ctx.fillText(`Score: ${score}`, 10, 20);
 }
+
+function nextFrame() {
+    draw();
+
+    window.requestAnimationFrame(nextFrame);
+}
+nextFrame();
 nextRound();
 
 document.addEventListener('click', (event) => {

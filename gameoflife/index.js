@@ -100,25 +100,21 @@ function applyRules() {
 
 function draw() {
     // Draw all in white - clear our canvas.
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = 'gray';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Draw all cells
     for (let row = 0; row < grid.length; row++) {
         for (let column = 0; column < grid[row].length; column++) {
-            const x = row * 10;
-            const y = column * 10;
-
-            ctx.fillStyle = 'gray';
-            ctx.fillRect(x, y, 10, 10);
+            const x = row * gridSize;
+            const y = column * gridSize;
 
             if (grid[row][column] === dead) {
                 ctx.fillStyle = 'white';
-                ctx.fillRect(x, y, 9, 9);
             } else {
                 ctx.fillStyle = 'black';
-                ctx.fillRect(x, y, 9, 9);
             }
+            ctx.fillRect(x, y, gridSize - 1, gridSize - 1);
         }
     }
 }

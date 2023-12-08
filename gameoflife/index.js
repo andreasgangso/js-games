@@ -28,13 +28,12 @@ function setup() {
         }
     }
 
-    draw();
+    nextFrame();
 }
 setup();
 
-function nextCycle() {
+function nextGameCycle() {
     applyRules();
-    draw();
 
     if (playing) {
         window.setTimeout(nextGameCycle, gameSpeed);
@@ -98,6 +97,12 @@ function applyRules() {
     grid = newGrid;
 }
 
+function nextFrame() {
+    draw();
+
+    window.requestAnimationFrame(nextFrame);
+}
+
 function draw() {
     // Draw all in white - clear our canvas.
     ctx.fillStyle = 'gray';
@@ -133,17 +138,15 @@ canvas.addEventListener('click', function (e) {
             grid[row][column] = dead;
         }
     }
+});
 
-    draw();
-})
-
-document.addEventListener('keyup', event => {
+document.addEventListener('keyup', (event) => {
     if (event.code === 'Space') {
         if (playing) {
             playing = false;
         } else {
             playing = true;
-            nextCycle();
+            nextGameCycle();
         }
     }
 });

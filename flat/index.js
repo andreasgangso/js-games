@@ -2,7 +2,9 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-let default_player_speed = 2;
+const default_player_speed = 2;
+const default_ball_speed = 2;
+
 let player_speed = 2;
 
 let p1_currentY = 0;
@@ -16,7 +18,6 @@ let p2_score = 0;
 
 let ball_x = 0;
 let ball_y = 0;
-let default_ball_speed = 2;
 let ball_speed = 2;
 let ball_direction_x = 1;
 let ball_direction_y = 1;

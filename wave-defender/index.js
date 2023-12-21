@@ -123,7 +123,25 @@ function colliding(a, b) {
     return a.x < b.x + 20 && a.x + 20 > b.x && a.y < b.y + 20 && a.y + 20 > b.y;
 }
 
-// TAP CONTROLS
+
+// Keyboard controls
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+        input.left = true;
+    } else if (event.key === 'ArrowRight') {
+        input.right = true;
+    }
+});
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'ArrowLeft') {
+        input.left = false;
+    } else if (event.key === 'ArrowRight') {
+        input.right = false;
+    }
+});
+
+
+// BONUS: TAP CONTROLS
 document.addEventListener(
     'touchstart',
     (event) => {
@@ -138,27 +156,10 @@ document.addEventListener(
     },
     { passive: false }
 );
-
 document.addEventListener('touchend', (event) => {
     if (event.changedTouches[0].clientX < canvas.width / 2) {
         input.left = false;
     } else {
-        input.right = false;
-    }
-});
-
-// Keyboard controls
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') {
-        input.left = true;
-    } else if (event.key === 'ArrowRight') {
-        input.right = true;
-    }
-});
-document.addEventListener('keyup', (event) => {
-    if (event.key === 'ArrowLeft') {
-        input.left = false;
-    } else if (event.key === 'ArrowRight') {
         input.right = false;
     }
 });

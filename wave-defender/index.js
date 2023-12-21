@@ -41,11 +41,6 @@ function gameLoop(time) {
     }
 
     // PLAYER LOGIC
-    if (player.direction === 'up') {
-        player.y -= 1 * delta;
-    } else if (player.direction === 'down') {
-        player.y += 1 * delta;
-    }
     if (player.direction === 'left') {
         player.x -= 0.5 * delta;
     } else if (player.direction === 'right') {

@@ -2,6 +2,9 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
 const dead = false;
 const alive = true;
 
@@ -12,25 +15,19 @@ let playing = false;
 
 let grid = [];
 
-function setup() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+const columns = Math.floor(canvas.width / gridSize);
+const rows = Math.floor(canvas.height / gridSize);
 
-    const columns = Math.floor(canvas.width / gridSize);
-    const rows = Math.floor(canvas.height / gridSize);
+// Init the grid. Initially all cells are dead.
+for (let column = 0; column < columns; column++) {
+    grid[column] = [];
 
-    // Init the grid. Initially all cells are dead.
-    for (let column = 0; column < columns; column++) {
-        grid[column] = [];
-
-        for (let row = 0; row < rows; row++) {
-            grid[column][row] = dead;
-        }
+    for (let row = 0; row < rows; row++) {
+        grid[column][row] = dead;
     }
-
-    nextFrame();
 }
-setup();
+
+nextFrame();
 
 function nextGameCycle() {
     applyRules();

@@ -38,8 +38,8 @@ function draw() {
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    for (var row = 0; row < rows; row++) {
-        for (var column = 0; column < columns; column++) {
+    for (let row = 0; row < rows; row++) {
+        for (let column = 0; column < columns; column++) {
             if (row === mole.row && column === mole.column) {
                 ctx.fillStyle = randoFillColour;
             } else {

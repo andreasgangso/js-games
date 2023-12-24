@@ -27,8 +27,6 @@ for (let column = 0; column < columns; column++) {
     }
 }
 
-nextFrame();
-
 function nextGameCycle() {
     applyRules();
 
@@ -94,11 +92,13 @@ function applyRules() {
     grid = newGrid;
 }
 
-function nextFrame() {
+function gameLoop() {
     draw();
 
-    window.requestAnimationFrame(nextFrame);
+    window.requestAnimationFrame(gameLoop);
 }
+
+gameLoop();
 
 function draw() {
     // Draw all in white - clear our canvas.
@@ -121,7 +121,7 @@ function draw() {
     }
 }
 
-canvas.addEventListener('click', function (e) {
+document.addEventListener('click', function (e) {
     // Get indexes of the element of the grid the user clicked on
     const rect = canvas.getBoundingClientRect();
     const column = Math.floor((e.clientX - rect.left) / gridSize);

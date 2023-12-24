@@ -34,13 +34,6 @@ const ball = {
     directionY: Math.random() > 0.5 ? 1 : -1,
 };
 
-const keys = {
-    w: false,
-    s: false,
-    ArrowUp: false,
-    ArrowDown: false,
-};
-
 function newRound() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
@@ -76,10 +69,6 @@ function gameOver() {
 }
 
 function gameLoop() {
-    // Handle player movement
-    playerBlue.direction = keys.w ? -1 : keys.s ? 1 : 0;
-    playerGreen.direction = keys.ArrowUp ? -1 : keys.ArrowDown ? 1 : 0;
-
     // Move players and ball
     playerBlue.y += playerBlue.direction * playerBlue.speed;
     playerGreen.y += playerGreen.direction * playerGreen.speed;
@@ -141,9 +130,16 @@ function draw() {
 }
 
 window.addEventListener('keydown', (event) => {
-    if (['w', 's', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
-        keys[event.key] = true;
+    if (event.key === 'w') {
+        playerBlue.direction = -1;
+    } else if (event.key === 's') {
+        playerBlue.direction = 1;
+    } else if (event.key === 'ArrowUp') {
+        playerGreen.direction = -1;
+    } else if (event.key === 'ArrowDown') {
+        playerGreen.direction = 1;
     }
+
     if (event.key === ' ') {
         if (paused) {
             paused = false;
@@ -155,8 +151,10 @@ window.addEventListener('keydown', (event) => {
 });
 
 window.addEventListener('keyup', (event) => {
-    if (['w', 's', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
-        keys[event.key] = false;
+    if (event.key === 'w' || event.key === 's') {
+        playerBlue.direction = 0;
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        playerGreen.direction = 0;
     }
 });
 

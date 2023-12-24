@@ -7,7 +7,6 @@ canvas.height = window.innerHeight;
 
 const defaultFillColour = '#5DA1B3';
 const randoFillColour = '#FFF581';
-const gameSpeed = 1000;
 const pointsPerHit = 15;
 
 let score = 1;
@@ -23,15 +22,17 @@ const widthOfColumn = canvas.width / columns;
 const cellWidth = widthOfColumn - colPadding * 2;
 const cellHeight = heightOfRow - rowPadding * 2;
 
-function nextRound() {
-    mole.row = Math.floor(Math.random() * rows);
-    mole.column = Math.floor(Math.random() * columns);
-}
-
-function startTimer() {
+window.setInterval(function () {
     score -= 1;
+}, 1000);
 
-    window.setTimeout(startTimer, gameSpeed);
+gameLoop();
+nextRound();
+
+function gameLoop() {
+    draw();
+
+    window.requestAnimationFrame(gameLoop);
 }
 
 function draw() {
@@ -60,14 +61,10 @@ function draw() {
     ctx.fillText(`Score: ${score}`, 10, 20);
 }
 
-function nextFrame() {
-    draw();
-
-    window.requestAnimationFrame(nextFrame);
+function nextRound() {
+    mole.row = Math.floor(Math.random() * rows);
+    mole.column = Math.floor(Math.random() * columns);
 }
-nextFrame();
-nextRound();
-startTimer();
 
 document.addEventListener('click', (event) => {
     const rect = canvas.getBoundingClientRect();

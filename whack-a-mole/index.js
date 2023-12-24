@@ -16,22 +16,16 @@ const columns = 4;
 const rowPadding = 10;
 const colPadding = 10;
 
-const mole = { row: 0, column: 0 };
 const heightOfRow = canvas.height / rows;
 const widthOfColumn = canvas.width / columns;
 
 const cellWidth = widthOfColumn - colPadding * 2;
 const cellHeight = heightOfRow - rowPadding * 2;
 
+const mole = { row: 0, column: 0 };
 function nextRound() {
     mole.row = Math.floor(Math.random() * rows);
     mole.column = Math.floor(Math.random() * columns);
-}
-
-function startTimer() {
-    score -= 1;
-
-    window.setTimeout(startTimer, gameSpeed);
 }
 
 function draw() {
@@ -60,16 +54,19 @@ function draw() {
     ctx.fillText(`Score: ${score}`, 10, 20);
 }
 
-function nextFrame() {
+function gameLoop() {
     draw();
 
-    window.requestAnimationFrame(nextFrame);
+    window.requestAnimationFrame(gameLoop);
 }
-nextFrame();
+gameLoop();
 nextRound();
-startTimer();
 
-document.addEventListener('click', (event) => {
+window.setInterval(function () {
+    score -= 1;
+}, gameSpeed);
+
+document.addEventListener('click', function (event) {
     const rect = canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;

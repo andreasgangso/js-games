@@ -27,14 +27,6 @@ for (let column = 0; column < columns; column++) {
     }
 }
 
-function nextGameCycle() {
-    applyRules();
-
-    if (playing) {
-        window.setTimeout(nextGameCycle, gameSpeed);
-    }
-}
-
 function countNeighbours(column, row) {
     let neighbours = 0;
 
@@ -92,6 +84,12 @@ function applyRules() {
     grid = newGrid;
 }
 
+setInterval(function () {
+    if (playing) {
+        applyRules();
+    }
+}, gameSpeed);
+
 function gameLoop() {
     draw();
 
@@ -143,7 +141,6 @@ document.addEventListener('keyup', (event) => {
             playing = false;
         } else {
             playing = true;
-            nextGameCycle();
         }
     }
 });

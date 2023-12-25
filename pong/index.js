@@ -10,7 +10,7 @@ const ballDefaultSpeed = canvas.width > 1000 ? 3 : 2;
 
 let gameOver = false;
 
-let input = {
+const input = {
     w: false,
     s: false,
     up: false,
@@ -37,9 +37,19 @@ const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     speed: ballDefaultSpeed,
-    directionX: Math.random() > 0.5 ? 1 : -1,
-    directionY: Math.random() > 0.5 ? 1 : -1,
+    directionX: getRandomDirection(),
+    directionY: getRandomDirection(),
 };
+
+// BONUS: Random direction for ball
+function getRandomDirection() {
+    let randomNumber = Math.random();
+    if (randomNumber > 0.5) {
+        return 1;
+    } else {
+        return -1;
+    }
+}
 
 function newRound() {
     ball.x = canvas.width / 2;

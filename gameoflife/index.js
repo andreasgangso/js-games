@@ -27,15 +27,13 @@ for (let column = 0; column < columns; column++) {
     }
 }
 
-nextFrame();
+gameLoop();
 
-function nextGameCycle() {
-    applyRules();
-
+setInterval(function () {
     if (playing) {
-        window.setTimeout(nextGameCycle, gameSpeed);
+        applyRules();
     }
-}
+}, gameSpeed);
 
 function countNeighbours(column, row) {
     let neighbours = 0;
@@ -94,10 +92,10 @@ function applyRules() {
     grid = newGrid;
 }
 
-function nextFrame() {
+function gameLoop() {
     draw();
 
-    window.requestAnimationFrame(nextFrame);
+    window.requestAnimationFrame(gameLoop);
 }
 
 function draw() {
@@ -143,7 +141,6 @@ document.addEventListener('keyup', (event) => {
             playing = false;
         } else {
             playing = true;
-            nextGameCycle();
         }
     }
 });

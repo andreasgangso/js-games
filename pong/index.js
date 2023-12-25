@@ -220,17 +220,17 @@ function showGameOver() {
     ctx.font = '30px Arial';
     if (playerBlue.score > playerGreen.score) {
         ctx.fillStyle = 'cyan';
-        ctx.fillText('Blue wins!', canvas.width / 2 - 100, canvas.height / 2);
+        ctx.fillText('Blue wins!', 100, 100);
     } else if (playerBlue.score < playerGreen.score) {
         ctx.fillStyle = 'lightgreen';
-        ctx.fillText('Green wins!', canvas.width / 2 - 100, canvas.height / 2);
+        ctx.fillText('Green wins!', 100, 100);
     } else {
         ctx.fillStyle = 'white';
-        ctx.fillText('Tie!', canvas.width / 2 - 50, canvas.height / 2);
+        ctx.fillText('Tie!', 100, 100);
     }
     ctx.fillText(
         'Press space to play again',
-        canvas.width / 2 - 200,
-        canvas.height / 2 + 50
+        100,
+        150
     );
 }

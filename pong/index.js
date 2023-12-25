@@ -8,7 +8,14 @@ canvas.height = window.innerHeight;
 const playerDefaultSpeed = 2;
 const ballDefaultSpeed = canvas.width > 1000 ? 3 : 2;
 
-let paused = false;
+let gameOver = false;
+
+let input = {
+    w: false,
+    s: false,
+    up: false,
+    down: false,
+};
 
 const playerBlue = {
     x: 10,
@@ -42,73 +49,85 @@ function newRound() {
     playerGreen.speed = playerDefaultSpeed;
 }
 
-function gameOver() {
-    paused = true;
-
-    // Paint background
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Paint text
-    ctx.font = '30px Arial';
-    if (playerBlue.score > playerGreen.score) {
-        ctx.fillStyle = 'cyan';
-        ctx.fillText('Blue wins!', canvas.width / 2 - 100, canvas.height / 2);
-    } else if (playerBlue.score < playerGreen.score) {
-        ctx.fillStyle = 'lightgreen';
-        ctx.fillText('Green wins!', canvas.width / 2 - 100, canvas.height / 2);
-    } else {
-        ctx.fillStyle = 'white';
-        ctx.fillText('Tie!', canvas.width / 2 - 50, canvas.height / 2);
-    }
-    ctx.fillText(
-        'Press space to play again',
-        canvas.width / 2 - 200,
-        canvas.height / 2 + 50
-    );
-}
-
 function gameLoop() {
-    // Move players and ball
+    // INPUT LOGIC for player green
+    if (input.w) {
+        playerBlue.direction = -1;
+    } else if (input.s) {
+        playerBlue.direction = 1;
+    } else if (!input.w && !input.s) {
+        playerBlue.direction = 0;
+    }
+
+    // INPUT LOGIC for player blue
+    if (input.up) {
+        playerGreen.direction = -1;
+    } else if (input.down) {
+        playerGreen.direction = 1;
+    } else if (!input.up && !input.down) {
+        playerGreen.direction = 0;
+    }
+
+    // PLAYER MOVEMENT LOGIC
     playerBlue.y += playerBlue.direction * playerBlue.speed;
     playerGreen.y += playerGreen.direction * playerGreen.speed;
+
+    // BALL MOVEMENT LOGIC
     ball.x += ball.directionX * ball.speed;
     ball.y += ball.directionY * ball.speed;
 
-    // Ball collisions
-    if (ball.y < 0 || ball.y > canvas.height - 10) ball.directionY *= -1;
+    // BALL COLLIDING WITH WALL?
+    if (ball.y < 0 || ball.y > canvas.height - 10) {
+        ball.directionY = -ball.directionY;
+    }
+
+    // BALL COLLIDING WITH LEFT SIDE?
     if (ball.x < 0) {
         playerGreen.score++;
-        ball.directionX = 1;
-        newRound();
+        if (playerGreen.score === 2) {
+            showGameOver();
+        } else {
+            newRound();
+        }
     }
+
+    // BALL COLLIDING WITH RIGHT SIDE?
     if (ball.x > canvas.width - 10) {
         playerBlue.score++;
-        if (playerBlue.score === 5) {
-            gameOver();
-            return;
+        if (playerBlue.score === 2) {
+            showGameOver();
+        } else {
+            newRound();
         }
-        ball.directionX = -1;
-        newRound();
     }
 
-    // Check if the ball is colliding with either player1 OR player2
-    if (
+    // BALL COLLIDING WITH PLAYER BLUE?
+    if
         (ball.x < playerBlue.x &&
-            ball.y > playerBlue.y &&
-            ball.y < playerBlue.y + 100) ||
-        (ball.x > playerGreen.x &&
-            ball.y > playerGreen.y &&
-            ball.y < playerGreen.y + 100)
+        ball.y > playerBlue.y &&
+        ball.y < playerBlue.y + 100
     ) {
-        ball.directionX *= -1;
-        ball.speed += 0.5;
-        playerBlue.speed += 0.5;
-        playerGreen.speed += 0.5;
+        whenBallHitsPlayer()
     }
 
-    draw();
-    window.requestAnimationFrame(gameLoop);
+    // BALL COLLIDING WITH PLAYER GREEN?
+    if (ball.x > playerGreen.x &&
+        ball.y > playerGreen.y &&
+        ball.y < playerGreen.y + 100) {
+        whenBallHitsPlayer()
+    }
+
+    if (!gameOver) {
+        draw();
+        window.requestAnimationFrame(gameLoop);
+    }
+}
+
+function whenBallHitsPlayer() {
+    ball.speed += 0.5;
+    playerBlue.speed += 0.5;
+    playerGreen.speed += 0.5;
+    ball.directionX = -ball.directionX;
 }
 
 function draw() {
@@ -141,21 +160,67 @@ window.addEventListener('keydown', (event) => {
     }
 
     if (event.key === ' ') {
-        if (paused) {
-            paused = false;
+        if (gameOver) {
+            gameOver = false;
             playerBlue.score = 0;
             playerGreen.score = 0;
+            newRound();
             gameLoop();
         }
     }
 });
 
-window.addEventListener('keyup', (event) => {
-    if (event.key === 'w' || event.key === 's') {
-        playerBlue.direction = 0;
-    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-        playerGreen.direction = 0;
+// Keyboard controls
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'w') {
+        input.w = true;
+    } else if (event.key === 's') {
+        input.s = true;
+    } else if (event.key === 'ArrowUp') {
+        input.up = true;
+    } else if (event.key === 'ArrowDown') {
+        input.down = true;
+    }
+});
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'w') {
+        input.w = false;
+    } else if (event.key === 's') {
+        input.s = false;
+    } else if (event.key === 'ArrowUp') {
+        input.up = false;
+    } else if (event.key === 'ArrowDown') {
+        input.down = false;
     }
 });
 
+
 gameLoop();
+
+
+// BONUS: Game over screen
+function showGameOver() {
+    gameOver = true;
+
+    // Paint background
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Paint text
+    ctx.font = '30px Arial';
+    if (playerBlue.score > playerGreen.score) {
+        ctx.fillStyle = 'cyan';
+        ctx.fillText('Blue wins!', canvas.width / 2 - 100, canvas.height / 2);
+    } else if (playerBlue.score < playerGreen.score) {
+        ctx.fillStyle = 'lightgreen';
+        ctx.fillText('Green wins!', canvas.width / 2 - 100, canvas.height / 2);
+    } else {
+        ctx.fillStyle = 'white';
+        ctx.fillText('Tie!', canvas.width / 2 - 50, canvas.height / 2);
+    }
+    ctx.fillText(
+        'Press space to play again',
+        canvas.width / 2 - 200,
+        canvas.height / 2 + 50
+    );
+}

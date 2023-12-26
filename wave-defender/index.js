@@ -19,10 +19,22 @@ let player = {
 // BULLETS
 let bullets = [];
 let lastBulletShotTime = 0;
+setInterval(function () {
+    bullets.push({
+        x: player.x + 5,
+        y: player.y,
+    });
+}, 100);
 
 // ENEMIES
 let enemies = [];
 let lastEnemySpawnTime = 0;
+setInterval(function () {
+    enemies.push({
+        x: Math.random() * canvas.width,
+        y: -20,
+    });
+}, 200);
 
 // GAME LOOP
 let lastTime = 0;
@@ -48,17 +60,6 @@ function gameLoop(time) {
     }
 
     // BULLET LOGIC
-    lastBulletShotTime = lastBulletShotTime + delta;
-    if (input.left || input.right) {
-        if (lastBulletShotTime > 100) {
-            bullets.push({
-                x: player.x + 5,
-                y: player.y,
-            });
-            lastBulletShotTime = 0;
-        }
-    }
-
     for (let bullet of bullets) {
         bullet.y -= 5;
         for (let enemy of enemies) {
@@ -72,14 +73,6 @@ function gameLoop(time) {
     }
 
     // ENEMY LOGIC
-    lastEnemySpawnTime = lastEnemySpawnTime + delta;
-    if (lastEnemySpawnTime > 200) {
-        enemies.push({
-            x: Math.random() * canvas.width,
-            y: -20,
-        });
-        lastEnemySpawnTime = 0;
-    }
     for (let enemy of enemies) {
         enemy.y += 1.5;
         if (enemy.y > canvas.height) {

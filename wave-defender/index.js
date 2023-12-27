@@ -13,12 +13,10 @@ let input = {
 let player = {
     x: canvas.width / 2,
     y: canvas.height - 100,
-    direction: 'none',
 };
 
 // BULLETS
 let bullets = [];
-let lastBulletShotTime = 0;
 setInterval(function () {
     bullets.push({
         x: player.x + 5,
@@ -28,7 +26,6 @@ setInterval(function () {
 
 // ENEMIES
 let enemies = [];
-let lastEnemySpawnTime = 0;
 setInterval(function () {
     enemies.push({
         x: Math.random() * canvas.width,
@@ -43,19 +40,10 @@ function gameLoop(time) {
     let delta = time - lastTime; // Time since last frame
     lastTime = time;
 
-    // INPUT LOGIC
-    if (input.left && player.direction != 'left') {
-        player.direction = 'left';
-    } else if (input.right && player.direction != 'right') {
-        player.direction = 'right';
-    } else if (!input.left && !input.right) {
-        player.direction = 'none';
-    }
-
     // PLAYER LOGIC
-    if (player.direction === 'left') {
+    if (input.left) {
         player.x -= 0.5 * delta;
-    } else if (player.direction === 'right') {
+    } else if (input.right) {
         player.x += 0.5 * delta;
     }
 

@@ -52,10 +52,8 @@ function gameLoop(time) {
         bullet.y -= 0.5 * delta;
         for (let enemy of enemies) {
             if (colliding(bullet, enemy)) {
-                // Remove bullet from list
-                bullets.splice(bullets.indexOf(bullet), 1);
-                // Remove enemy from list
-                enemies.splice(enemies.indexOf(enemy), 1);
+                bullets = bullets.filter(b => b !== bullet);
+                enemies = enemies.filter(e => e !== enemy);
             }
         }
     }
@@ -100,8 +98,24 @@ function draw() {
     }
 }
 
-function colliding(a, b) {
-    return a.x < b.x + 20 && a.x + 20 > b.x && a.y < b.y + 20 && a.y + 20 > b.y;
+function colliding(bullet, enemy) {
+    let topOfBullet = bullet.y;
+    let bottomOfEnemy = enemy.y + 20;
+    let topOfEnemy = enemy.y;
+
+    let leftSideOfBullet = bullet.x;
+    let rightSideOfBullet = bullet.x + 10;
+    let leftSideOfEnemy = enemy.x;
+    let rightSideOfEnemy = enemy.x + 20;
+
+    if (topOfBullet < bottomOfEnemy && topOfBullet > topOfEnemy) {
+        if (leftSideOfBullet > leftSideOfEnemy && leftSideOfBullet < rightSideOfEnemy) {
+            return true;
+        } else if (rightSideOfBullet > leftSideOfEnemy && rightSideOfBullet < rightSideOfEnemy) {
+            return true;
+        }
+    }
+    return false;
 }
 
 

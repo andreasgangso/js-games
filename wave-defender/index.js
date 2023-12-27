@@ -49,7 +49,7 @@ function gameLoop(time) {
 
     // BULLET LOGIC
     for (let bullet of bullets) {
-        bullet.y -= 5;
+        bullet.y -= 0.5 * delta;
         for (let enemy of enemies) {
             if (colliding(bullet, enemy)) {
                 // Remove bullet from list
@@ -62,7 +62,7 @@ function gameLoop(time) {
 
     // ENEMY LOGIC
     for (let enemy of enemies) {
-        enemy.y += 1.5;
+        enemy.y += 0.15 * delta;
         if (enemy.y > canvas.height) {
             // Game over
             ctx.fillStyle = 'white';
